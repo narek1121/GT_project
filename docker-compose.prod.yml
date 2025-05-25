@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    env_file:
+      - ./.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./backend/nginx/:/etc/nginx/conf.d/:ro
+      - ./backend/certs/server.crt:/etc/nginx/certs/server.crt:ro
+      - ./backend/certs/server.key:/etc/nginx/certs/server.key:ro
+      - static_data:/app/staticfiles:ro
+    depends_on:
+      - web
+
+volumes:
+  db_data:
+  static_data:
