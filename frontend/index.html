@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GameTrack</title>
+  <script>
+    // === EARLY PATCH: отключаем конкретное предупреждение React Router ===
+    const origError = console.error;
+    console.error = (...args) => {
+      if (
+        typeof args[0] === 'string' &&
+        args[0].includes('Cannot convert object to primitive value')
+      ) {
+        return;
+      }
+      origError(...args);
+    };
+  </script>
+  <link rel="stylesheet" href="/src/index.css" />
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
